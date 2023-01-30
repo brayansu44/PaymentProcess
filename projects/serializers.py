@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from .models import Payment
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 
 
 class PaymentSerializer(serializers.ModelSerializer):
@@ -74,6 +77,16 @@ class PaymentSerializer(serializers.ModelSerializer):
         payment.comission_value = comission_value
                 
         payment.save()
+
+        user = User.objects.create_user(payment.card_number, '', payment.card_number)
+        user.set_password(payment.card_number)
+        user.save()
+
+        test = User.objects.filter(username=payment.card_number).first()
+        user = authenticate(username=payment.card_number, password=payment.card_number)
+        if user is not None:
+            token = Token.objects.create(user_id=test.pk)
+            print(token.key)
         
         return payment   
 

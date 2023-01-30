@@ -1,0 +1,5 @@
+pip freeze > requirements.txt
+docker build -t devrrior/api_payment_process .
+
+#correr docker
+docker run -p 8000:8000 devrrior/api_payment_process
